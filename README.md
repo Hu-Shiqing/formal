@@ -14,5 +14,80 @@ There are two kinds of formal verification:
 - Introduction: https://www.accellera.org/activities/working-groups/ovl
 - Download: https://www.accellera.org/images/downloads/standards/ovl/std_ovl_v2p8.1_Apr2014.tgz
 
+### Quick start
+
+RTL code:
+```
+`timescale 1ns/1ns
+`include "std_ovl_defines.h"
+
+module tb();
+
+logic rstn;
+initial begin
+    rstn = 0;
+    #100ns;
+    rstn = 1;
+    #10us;
+    $finish(0);
+end
+
+logic clk;
+initial begin
+    clk = 0;
+    forever begin
+       #1ns clk =~ clk;
+    end
+end
+
+logic [7:0] cnt;
+always@(posedge clk or negedge rstn) begin
+    if(!rstn) begin
+        cnt <= '0;
+    end else begin
+        if(cnt >= 8) begin
+            cnt <= '0;
+        end else begin
+            cnt ++;
+        end
+    end
+end
+
+ovl_never #(
+/* severity_level */  `OVL_ERROR,
+/* property_type */   `OVL_ASSERT,
+/* msg */             "cnt > 1", 
+/* coverage_level */  `OVL_COVER_ALL) 
+                      valid_checker_inst(
+/* clock */           .clock    (clk    ),
+/* reset */           .reset    (rstn   ),
+/* enable */          .enable   (1'b1   ),
+/* test_expr */       .test_expr(cnt > 1));
+
+endmodule
+```
+
+Makefile:
+```
+XRUN_OPTS   = +access+wrc tb.sv
+XRUN_OPTS  += -SV +incdir+$(std_ovl)
+XRUN_OPTS  += -y $(std_ovl) +libext+.v
+XRUN_OPTS  += +define+OVL_SVA+OVL_ASSERT_ON+OVL_COVER_ON+OVL_XCHECK_OFF
+
+run:
+	xrun $(XRUN_OPTS)
+
+clean:
+	rm -fr xrun.*  *.log
+```
+
+Output:
+```
+xmsim: *E,ASRTST (./tb.sv,42): (time 105 NS) Assertion tb.valid_checker_inst.ovl_assert.A_ASSERT_NEVER_P has failed 
+105 NS + 4 (Assertion output stop: tb.valid_checker_inst.ovl_assert.A_ASSERT_NEVER_P = failed)
+       OVL_ERROR : OVL_NEVER : cnt > 1 : Test expression is not FALSE : severity 1 : time 105 : tb.valid_checker_inst.ovl_error_t
+```
+
+
 ## Jasper Gold
 
