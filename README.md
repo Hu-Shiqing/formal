@@ -54,10 +54,10 @@ always@(posedge clk or negedge rstn) begin
 end
 
 ovl_never #(
-/* severity_level */  `OVL_ERROR,
-/* property_type */   `OVL_ASSERT,
-/* msg */             "cnt > 1", 
-/* coverage_level */  `OVL_COVER_ALL) 
+/* severity_level */  `OVL_ERROR,       // raise error when violation occurs, other value: OVL_FATAL
+/* property_type */   `OVL_ASSERT,      // other value: OVL_ASSUME. both are the same in dynamic simulation.
+/* msg */             "cnt > 1",        // error message
+/* coverage_level */  `OVL_COVER_ALL)   // enable coverage for this assertion. can be turned off globally by OVL_COVER_ON
                       valid_checker_inst(
 /* clock */           .clock    (clk    ),
 /* reset */           .reset    (rstn   ),
@@ -72,7 +72,10 @@ Makefile:
 XRUN_OPTS   = +access+wrc tb.sv
 XRUN_OPTS  += -SV +incdir+$(std_ovl)
 XRUN_OPTS  += -y $(std_ovl) +libext+.v
-XRUN_OPTS  += +define+OVL_SVA+OVL_ASSERT_ON+OVL_COVER_ON+OVL_XCHECK_OFF
+# Specify language, by default is OVL_VERILOG
+XRUN_OPTS  += +define+OVL_SVA
+# Switch to turn on assertion, coverage and xcheck.
+XRUN_OPTS  += +define+OVL_ASSERT_ON+OVL_COVER_ON+OVL_XCHECK_OFF
 
 run:
 	xrun $(XRUN_OPTS)
