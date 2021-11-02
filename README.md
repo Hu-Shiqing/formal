@@ -91,6 +91,53 @@ xmsim: *E,ASRTST (./tb.sv,42): (time 105 NS) Assertion tb.valid_checker_inst.ovl
        OVL_ERROR : OVL_NEVER : cnt > 1 : Test expression is not FALSE : severity 1 : time 105 : tb.valid_checker_inst.ovl_error_t
 ```
 
+### Another example
+```
+logic pulse;
+logic [7:0] cnt;
+always@(posedge clk or negedge rstn) begin
+    if(!rstn) begin
+        cnt <= '0;
+        pulse <= '0;
+    end else begin
+        if(cnt >= 8) begin
+            cnt <= '0;
+            pulse <= '1;
+        end else begin
+            cnt ++;
+            pulse <= '0;
+        end
+    end
+end
+```
+
+<img width="1211" alt="Screenshot 2021-11-02 at 5 00 12 PM" src="https://user-images.githubusercontent.com/35386741/139816580-874c2368-9831-4f92-9e19-4e0626fdd0de.png">
+
+```
+ovl_next #(
+    `OVL_ERROR,
+    2,
+    1,
+    0,
+    `OVL_ASSERT,
+    "error:",
+    `OVL_COVER_DEFAULT,
+    `OVL_POSEDGE,
+    `OVL_ACTIVE_LOW,
+    `OVL_GATE_CLOCK)
+    ovl_next_inst_pulse (
+       clk,
+       rstn,
+       1'b1,
+       cnt == 8,
+       pulse == 1);
+```
+
+
+
+
+
+
 
 ## Jasper Gold
 
