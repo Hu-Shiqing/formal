@@ -116,7 +116,7 @@ end
 ```
 ovl_next #(
     `OVL_ERROR,
-    2,
+    1,
     1,
     0,
     `OVL_ASSERT,
@@ -152,8 +152,8 @@ analyze \
     tb.sv
 
 elaborate -top tb
-clock -none
-reset -none
+clock clk
+reset !rstn
 prove -all
 exit
 ```
