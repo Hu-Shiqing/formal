@@ -141,3 +141,29 @@ ovl_next #(
 
 ## Jasper Gold
 
+### tb.tcl
+```
+clear -all
+analyze \
+    -y $::env(trunk)/acm_gnss/tb/common/lib/std_ovl +libext+.v \
+    -sv +incdir+$::env(trunk)/acm_gnss/tb/common/lib/std_ovl \
+    +define+OVL_SVA \
+    +define+OVL_ASSERT_ON+OVL_COVER_ON+OVL_XCHECK_OFF \
+    tb.sv
+
+elaborate -top tb
+clock -none
+reset -none
+prove -all
+exit
+```
+
+```
+formal:
+	rm -fr jgproject
+	jaspergold -fpv -no_gui tb.tcl
+```
+
+
+
+
