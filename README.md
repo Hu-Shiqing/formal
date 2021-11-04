@@ -145,8 +145,8 @@ ovl_next #(
 ```
 clear -all
 analyze \
-    -y $::env(trunk)/acm_gnss/tb/common/lib/std_ovl +libext+.v \
-    -sv +incdir+$::env(trunk)/acm_gnss/tb/common/lib/std_ovl \
+    -y $std_ovl +libext+.v \
+    -sv +incdir+$std_ovl \
     +define+OVL_SVA \
     +define+OVL_ASSERT_ON+OVL_COVER_ON+OVL_XCHECK_OFF \
     tb.sv
@@ -163,7 +163,29 @@ formal:
 	rm -fr jgproject
 	jaspergold -fpv -no_gui tb.tcl
 ```
-
-
-
-
+Output:
+```
+==============================================================
+SUMMARY
+==============================================================
+           Properties Considered              : 4
+                 assertions                   : 2
+                  - proven                    : 2 (100%)
+                  - bounded_proven (user)     : 0 (0%)
+                  - bounded_proven (auto)     : 0 (0%)
+                  - marked_proven             : 0 (0%)
+                  - cex                       : 0 (0%)
+                  - ar_cex                    : 0 (0%)
+                  - undetermined              : 0 (0%)
+                  - unknown                   : 0 (0%)
+                  - error                     : 0 (0%)
+                 covers                       : 2
+                  - unreachable               : 0 (0%)
+                  - bounded_unreachable (user): 0 (0%)
+                  - covered                   : 2 (100%)
+                  - ar_covered                : 0 (0%)
+                  - undetermined              : 0 (0%)
+                  - unknown                   : 0 (0%)
+                  - error                     : 0 (0%)
+determined
+```
