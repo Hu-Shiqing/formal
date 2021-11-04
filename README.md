@@ -157,13 +157,13 @@ reset !rstn
 prove -all
 exit
 ```
-
+### Makefile:
 ```
 formal:
 	rm -fr jgproject
 	jaspergold -fpv -no_gui tb.tcl
 ```
-Output:
+### Output:
 ```
 ==============================================================
 SUMMARY
