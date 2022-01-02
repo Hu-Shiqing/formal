@@ -6,8 +6,93 @@ SVA can be also used in formal verification, similar as PSL and other language. 
 
 There are two kinds of formal verification:
 
-1. Connectivity check for combination logic like GPIO MUX and Debug MUX.
-2. Termporal assertion. it can also check sequential logic with provided temporal/timing assertion.
+1. Connection check for combination logic like GPIO MUX and Debug MUX.
+2. Temporal assertion. it can also check sequential logic with provided temporal/timing assertion.
+
+## Connection check
+
+The most common use case for connection check GPIO MUX and Debug MUX logic in complex SoC design.
+
+### Traditional test in dynamic simulation
+
+
+
+### Formal verification using JasperGold
+
+dut.v
+```
+module mux(a, b, s, y);
+input a, b, s;
+output y;
+
+assign y = s ? a : b;
+
+endmodule
+```
+
+dut.csv
+```
+CONNECTION,conn_wrp_dbg_m0_b0,,a,,y
+COND_EXPR,(s==1)
+
+CONNECTION,conn_wrp_dbg_m0_b1,,b,,y
+COND_EXPR,(s==0)
+```
+
+dut.tcl
+```
+analyze -verilog dut.v
+elaborate -top mux
+
+clock -none
+reset -none
+
+check_conn -load ./dut.csv 
+check_conn -generate_toggle_checks {}
+
+check_conn -prove
+```
+
+Makefile:
+```
+jg:
+	-rm -fr jgproject
+	jaspergold -fpv dut.tcl -no_gui
+
+jg_gui:
+	-rm -fr jgproject
+	jaspergold -fpv dut.tcl
+```
+
+Output:
+```
+==============================================================
+SUMMARY
+==============================================================
+           Properties Considered              : 8
+                 assertions                   : 2
+                  - proven                    : 2 (100%)
+                  - bounded_proven (user)     : 0 (0%)
+                  - bounded_proven (auto)     : 0 (0%)
+                  - marked_proven             : 0 (0%)
+                  - cex                       : 0 (0%)
+                  - ar_cex                    : 0 (0%)
+                  - undetermined              : 0 (0%)
+                  - unknown                   : 0 (0%)
+                  - error                     : 0 (0%)
+                 covers                       : 6
+                  - unreachable               : 0 (0%)
+                  - bounded_unreachable (user): 0 (0%)
+                  - covered                   : 6 (100%)
+                  - ar_covered                : 0 (0%)
+                  - undetermined              : 0 (0%)
+                  - unknown                   : 0 (0%)
+                  - error                     : 0 (0%)
+determined
+```
+
+
+## Temporal assertion
 
 
 ## Open Verification Library(OVL)
@@ -183,80 +268,6 @@ SUMMARY
                   - unreachable               : 0 (0%)
                   - bounded_unreachable (user): 0 (0%)
                   - covered                   : 2 (100%)
-                  - ar_covered                : 0 (0%)
-                  - undetermined              : 0 (0%)
-                  - unknown                   : 0 (0%)
-                  - error                     : 0 (0%)
-determined
-```
-
-### JasperGold connectivity App
-
-dut.v
-```
-module mux(a, b, s, y);
-input a, b, s;
-output y;
-
-assign y = s ? a : b;
-
-endmodule
-```
-
-dut.csv
-```
-CONNECTION,conn_wrp_dbg_m0_b0,,a,,y
-COND_EXPR,(s==1)
-
-CONNECTION,conn_wrp_dbg_m0_b1,,b,,y
-COND_EXPR,(s==0)
-```
-
-dut.tcl
-```
-analyze -verilog dut.v
-elaborate -top mux
-
-clock -none
-reset -none
-
-check_conn -load ./dut.csv 
-check_conn -generate_toggle_checks {}
-
-check_conn -prove
-```
-
-Makefile:
-```
-jg:
-	-rm -fr jgproject
-	jaspergold -fpv dut.tcl -no_gui
-
-jg_gui:
-	-rm -fr jgproject
-	jaspergold -fpv dut.tcl
-```
-
-Output:
-```
-==============================================================
-SUMMARY
-==============================================================
-           Properties Considered              : 8
-                 assertions                   : 2
-                  - proven                    : 2 (100%)
-                  - bounded_proven (user)     : 0 (0%)
-                  - bounded_proven (auto)     : 0 (0%)
-                  - marked_proven             : 0 (0%)
-                  - cex                       : 0 (0%)
-                  - ar_cex                    : 0 (0%)
-                  - undetermined              : 0 (0%)
-                  - unknown                   : 0 (0%)
-                  - error                     : 0 (0%)
-                 covers                       : 6
-                  - unreachable               : 0 (0%)
-                  - bounded_unreachable (user): 0 (0%)
-                  - covered                   : 6 (100%)
                   - ar_covered                : 0 (0%)
                   - undetermined              : 0 (0%)
                   - unknown                   : 0 (0%)
