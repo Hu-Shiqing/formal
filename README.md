@@ -94,12 +94,16 @@ determined
 
 ## Temporal assertion
 
+Temporal assertion is to check timing and other behaviour in sequential design. The assertion can be used in traditional dynamic simulation, running the check in background. Newly some formal verification engine, like JasperGold, can use the temporal assertion to check the design without dynamic simulation. 
 
-## Open Verification Library(OVL)
+There are different languanges which support temporal assertion, like VHDL, PSL, and System verilog. OVL provides us a language indepedent method to write temporal assertion which is also easier to understand in terms of syntax.
+
+### Open Verification Library(OVL)
+
 - Introduction: https://www.accellera.org/activities/working-groups/ovl
 - Download: https://www.accellera.org/images/downloads/standards/ovl/std_ovl_v2p8.1_Apr2014.tgz
 
-### Quick start
+#### Quick start
 
 RTL code:
 ```
@@ -176,7 +180,7 @@ xmsim: *E,ASRTST (./tb.sv,42): (time 105 NS) Assertion tb.valid_checker_inst.ovl
        OVL_ERROR : OVL_NEVER : cnt > 1 : Test expression is not FALSE : severity 1 : time 105 : tb.valid_checker_inst.ovl_error_t
 ```
 
-### Another example
+#### Another example
 ```
 logic pulse;
 logic [7:0] cnt;
@@ -224,9 +228,9 @@ ovl_next #(
 
 
 
-## Jasper Gold
+### Jasper Gold and OVL
 
-### tb.tcl
+#### tb.tcl
 ```
 clear -all
 analyze \
@@ -242,13 +246,13 @@ reset !rstn
 prove -all
 exit
 ```
-### Makefile:
+#### Makefile:
 ```
 formal:
 	rm -fr jgproject
 	jaspergold -fpv -no_gui tb.tcl
 ```
-### Output:
+#### Output:
 ```
 ==============================================================
 SUMMARY
