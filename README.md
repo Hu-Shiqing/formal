@@ -11,11 +11,30 @@ There are two kinds of formal verification:
 
 ## Connection check
 
-The most common use case for connection check GPIO MUX and Debug MUX logic in complex SoC design.
+The most common use case for connection is check GPIO MUX and Debug MUX combinational logic in complex SoC design.
 
 ### Traditional test in dynamic simulation
 
+Traditionally, we can force the source signal one by one, and then check the destination signal values in dynamic simulation. It's simple and works fine. But in many cases, the test case may become very complex and difficult to maintain. 
 
+In order to solve the maintenance issue in this traditional connection test, another simple and standard connection test framework has been defined.
+
+```
+`VC_CONNECTION_BEGIN
+    `VC_CONNECTION(conn_wrp_dbg_m0_b0, a, y)
+    `VC_COND_EXPR((s==1))
+    `VC_CONNECTION(conn_wrp_dbg_m0_b1, b, y)
+    `VC_COND_EXPR((s==0))
+`VC_CONNECTION_END
+
+initial begin
+    s = 0;
+    vc_conn_assert();
+    s = 1;
+    vc_conn_assert();
+    vc_conn_report();
+end
+```
 
 ### Formal verification using JasperGold
 
@@ -222,15 +241,9 @@ ovl_next #(
        pulse == 1);
 ```
 
-
-
-
-
-
-
 ### Jasper Gold and OVL
 
-#### tb.tcl
+tb.tcl
 ```
 clear -all
 analyze \
@@ -246,13 +259,13 @@ reset !rstn
 prove -all
 exit
 ```
-#### Makefile:
+Makefile:
 ```
 formal:
 	rm -fr jgproject
 	jaspergold -fpv -no_gui tb.tcl
 ```
-#### Output:
+Output:
 ```
 ==============================================================
 SUMMARY
