@@ -66,7 +66,7 @@ In order to resolve the maintenance issue in this traditional connection test, a
 Test example in new framework:
 
 ```
-`VC_CONNECTION_BEGIN
+`VC_CONNECTION_BEGIN(test0)
     `VC_CONNECTION(conn_s0, a, y)
     `VC_COND_EXPR((s==1))
     `VC_CONNECTION(conn_s1, b, y)
