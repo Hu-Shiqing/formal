@@ -19,6 +19,8 @@ Traditionally, we can force the source signal one by one, and then check the des
 
 In order to solve the maintenance issue in this traditional connection test, another simple and standard connection test framework has been defined.
 
+<img width="851" alt="Screenshot 2022-01-04 at 10 48 48 AM" src="https://user-images.githubusercontent.com/35386741/148003047-5589eb57-f0e5-4e06-a249-279a41825bf9.png">
+
 ```
 `VC_CONNECTION_BEGIN
     `VC_CONNECTION(conn_wrp_dbg_m0_b0, a, y)
@@ -28,11 +30,9 @@ In order to solve the maintenance issue in this traditional connection test, ano
 `VC_CONNECTION_END
 
 initial begin
-    s = 0;
-    vc_conn_assert();
-    s = 1;
-    vc_conn_assert();
-    vc_conn_report();
+    vc_conn_assert_all();
+    $display("Simulation complete via $finish(1) at time %0t", $time);
+    $finish(1);
 end
 ```
 
