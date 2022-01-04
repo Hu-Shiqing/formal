@@ -19,7 +19,7 @@ Traditionally, we can force the source signal one by one, and then check the des
 
 In order to solve the maintenance issue in this traditional connection test, another simple and standard connection test framework has been defined.
 
-<img width="851" alt="Screenshot 2022-01-04 at 10 48 48 AM" src="https://user-images.githubusercontent.com/35386741/148003047-5589eb57-f0e5-4e06-a249-279a41825bf9.png">
+<img width="862" alt="Screenshot 2022-01-04 at 10 56 34 AM" src="https://user-images.githubusercontent.com/35386741/148003609-78c14307-6481-429d-ba3f-01edc1bed6d3.png">
 
 ```
 `VC_CONNECTION_BEGIN
