@@ -11,32 +11,7 @@ There are two kinds of formal verification:
 
 ## Connection check
 
-The most common use case for connection is check GPIO MUX and Debug MUX combinational logic in complex SoC design.
-
-### Traditional test in dynamic simulation
-
-Traditionally, we can force the source signal one by one, and then check the destination signal values in dynamic simulation. It's simple and works fine. But in many cases, the test case may become very complex and difficult to maintain. 
-
-In order to solve the maintenance issue in this traditional connection test, another simple and standard connection test framework has been defined.
-
-<img width="862" alt="Screenshot 2022-01-04 at 10 56 34 AM" src="https://user-images.githubusercontent.com/35386741/148003609-78c14307-6481-429d-ba3f-01edc1bed6d3.png">
-
-```
-`VC_CONNECTION_BEGIN
-    `VC_CONNECTION(conn_wrp_dbg_m0_b0, a, y)
-    `VC_COND_EXPR((s==1))
-    `VC_CONNECTION(conn_wrp_dbg_m0_b1, b, y)
-    `VC_COND_EXPR((s==0))
-`VC_CONNECTION_END
-
-initial begin
-    vc_conn_assert_all();
-    $display("Simulation complete via $finish(1) at time %0t", $time);
-    $finish(1);
-end
-```
-
-### Formal verification using JasperGold
+The most common use case for connection is check GPIO MUX and Debug MUX combinational logic in complex SoC design. Say we have a simple MUX as DUT:
 
 dut.v
 ```
@@ -48,6 +23,63 @@ assign y = s ? a : b;
 
 endmodule
 ```
+
+### Traditional test in dynamic simulation
+
+Traditionally, we can force the source signal one by one, and then check the destination signal values in dynamic simulation. It's simple and works fine. But in many cases, the test case may become very complex and difficult to maintain. 
+
+Test example:
+```
+always@(*)
+    if(s == 1) assert(y == a);
+    else assert(y == b);
+    
+initial begin
+    s = 0;
+    a = 0; b = 0;
+    #1ns;
+    a = 0; b = 1;
+    #1ns;
+    a = 1; b = 0;
+    #1ns;
+    a = 1; b = 1;
+    #1ns;
+    
+    s = 1;
+    a = 0; b = 0;
+    #1ns;
+    a = 0; b = 1;
+    #1ns;
+    a = 1; b = 0;
+    #1ns;
+    a = 1; b = 1;
+    #1ns;
+end
+```
+
+In real case, since there are normally many signals from different blocks, above sequence will become very long and hard to maintain.
+
+In order to resolve the maintenance issue in this traditional connection test, a simple and standard connection test framework has been defined.
+
+<img width="862" alt="Screenshot 2022-01-04 at 10 56 34 AM" src="https://user-images.githubusercontent.com/35386741/148003609-78c14307-6481-429d-ba3f-01edc1bed6d3.png">
+
+Test example in new framework:
+
+```
+`VC_CONNECTION_BEGIN
+    `VC_CONNECTION(conn_s0, a, y)
+    `VC_COND_EXPR((s==1))
+    `VC_CONNECTION(conn_s1, b, y)
+    `VC_COND_EXPR((s==0))
+    `VC_CONN_COND(s)
+`VC_CONNECTION_END
+
+initial begin
+    vc_conn_assert_all();
+end
+```
+
+### Formal verification using JasperGold
 
 dut.csv
 ```
