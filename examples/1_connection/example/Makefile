@@ -1,5 +1,5 @@
 ## ===============================================================================
-## Date: 01/02/2022
+## Date: 01/03/2022
 ## Creator: Hu, Shiqing
 ## E-mail: ryderhu512@gmail.com
 ## Description: 
@@ -8,10 +8,10 @@
 
 
 xrun:
-	xrun ../vc_formal.sv tb.sv -top tb +access+rwc
+	xrun ../vc_formal.sv tb.sv -top tb +access+rwc +test0 # +define+VC_CONN_DBG
 
 xrun_gui:
-	xrun ../vc_formal.sv tb.sv -top tb +access+rwc -gui
+	xrun ../vc_formal.sv tb.sv -top tb +access+rwc +test1 -gui
 
 jg:
 	-rm -fr jgproject

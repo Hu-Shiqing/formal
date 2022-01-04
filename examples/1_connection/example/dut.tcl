@@ -1,5 +1,5 @@
 ## ===============================================================================
-## Date: 01/02/2022
+## Date: 01/03/2022
 ## Creator: Hu, Shiqing
 ## E-mail: ryderhu512@gmail.com
 ## Description: 
@@ -16,4 +16,4 @@ check_conn -load ./dut.csv
 check_conn -generate_toggle_checks {}
 
 check_conn -prove
-
+exit
