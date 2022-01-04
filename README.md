@@ -81,6 +81,8 @@ end
 
 ### Formal verification using JasperGold
 
+The Perl script will generate CSV file which represents the connection in different format and this file would be input for JasperGold connection App.
+
 dut.csv
 ```
 CONNECTION,conn_wrp_dbg_m0_b0,,a,,y
